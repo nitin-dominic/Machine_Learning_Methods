@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[35]:
-
-
+# Nitin Rai
+# Agricultural and Biosystems Engineering
+# North Dakota State University
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
@@ -11,31 +8,16 @@ import mahotas
 import cv2
 import os
 import h5py
-
-
-# In[51]:
-
-
 images_per_class = 150
 fixed_size       = tuple((500, 500))
 train_path       = r"C:/Users/nitin/OneDrive/Desktop/CourseWork/Python/train/"
 h5_data          = r'C:/Users/nitin/OneDrive/Desktop/CourseWork/Python/output/data.h5'
 h5_labels        = r'C:/Users/nitin/OneDrive/Desktop/CourseWork/Python/output/labels.h5'
 bins             = 8
-
-
-# In[52]:
-
-
 def fd_hu_moments(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     feature = cv2.HuMoments(cv2.moments(image)).flatten()
     return feature
-
-
-# In[53]:
-
-
 # feature-descriptor-2: Haralick Texture
 def fd_haralick(image):
     # convert the image to grayscale
@@ -44,11 +26,6 @@ def fd_haralick(image):
     haralick = mahotas.features.haralick(gray).mean(axis=0)
     # return the result
     return haralick
-
-
-# In[54]:
-
-
 # feature-descriptor-3: Color Histogram
 def fd_histogram(image, mask=None):
     # convert the image to HSV color-space
@@ -59,11 +36,6 @@ def fd_histogram(image, mask=None):
     cv2.normalize(hist, hist)
     # return the histogram
     return hist.flatten()
-
-
-# In[55]:
-
-
 # get the training labels
 train_labels = os.listdir(train_path)
 
@@ -74,11 +46,6 @@ print(train_labels)
 # empty lists to hold feature vectors and labels
 global_features = []
 labels          = []
-
-
-# In[56]:
-
-
 # loop over the training data sub-folders
 for training_name in train_labels:
     # join the training data path and each species training folder
@@ -115,11 +82,6 @@ for training_name in train_labels:
     print("[STATUS] processed folder: {}".format(current_label))
 
 print("[STATUS] completed Global Feature Extraction...")
-
-
-# In[57]:
-
-
 # get the overall feature vector size
 print("[STATUS] feature vector size {}".format(np.array(global_features).shape))
 
@@ -151,11 +113,9 @@ h5f_data.close()
 h5f_label.close()
 
 print("[STATUS] end of training..")
-
-
-# In[70]:
-
-
+########################################################################################
+# Implmentation Starts
+########################################################################################
 import h5py
 import numpy as np
 import os
@@ -230,10 +190,6 @@ print("[STATUS] labels shape: {}".format(global_labels.shape))
 
 print("[STATUS] training started...")
 
-
-# In[71]:
-
-
 # split the training and testing data
 (trainDataGlobal, testDataGlobal, trainLabelsGlobal, testLabelsGlobal) = train_test_split(np.array(global_features),
                                                                                           np.array(global_labels),
@@ -245,10 +201,6 @@ print("Train data  : {}".format(trainDataGlobal.shape))
 print("Test data   : {}".format(testDataGlobal.shape))
 print("Train labels: {}".format(trainLabelsGlobal.shape))
 print("Test labels : {}".format(testLabelsGlobal.shape))
-
-
-# In[72]:
-
 
 # 10-fold cross validation
 for name, model in models:
@@ -266,11 +218,6 @@ ax = fig.add_subplot(111)
 pyplot.boxplot(results)
 ax.set_xticklabels(names)
 pyplot.show()
-
-
-# In[93]:
-
-
 #-----------------------------------
 # TESTING OUR MODEL
 #-----------------------------------
@@ -288,11 +235,6 @@ clf.fit(trainDataGlobal, trainLabelsGlobal)
 for file in glob.glob(test_path + "/*.png"):
     # read the image
     image = cv2.imread(file)
-
-
-# In[95]:
-
-
 
     # resize the image
     image = cv2.resize(image, fixed_size)
@@ -323,10 +265,3 @@ for file in glob.glob(test_path + "/*.png"):
     # display the output image
     plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
     plt.show()
-
-
-# In[ ]:
-
-
-
-
